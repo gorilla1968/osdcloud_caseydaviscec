@@ -1,3 +1,11 @@
+#===================================================
+# Windows 11 Staff Image used for all Staff Devices
+# 
+# Make sure laptop has Secure Boot turned ON
+# Make sure laptop has TPM turned ON
+#
+#===================================================
+
 #================================================
 #   [PreOS] Update Module
 #================================================
