@@ -95,7 +95,7 @@ $Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
 
 $AssignedComputerName = "CEC-$Serial"
 Write-Host -ForegroundColor Red $AssignedComputerName
-Rename-Computer -Newname $AssignedComputerName -Force
+Rename-Computer -Newname $AssignedComputerName -Confirm -Force
 Write-Host -ForegroundColor Red "Renamed Computer before Autopilot"
 
 Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json"
