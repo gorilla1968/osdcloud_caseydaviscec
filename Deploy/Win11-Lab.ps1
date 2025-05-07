@@ -102,8 +102,13 @@ $OOBECMD = @'
 # Execute OOBE Tasks
 # start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilotoobe.ps1
 
+# Setting the hostname
+Write-Host -ForegroundColor Red "Rename Computer before Autopilot"
+$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
+Rename-Computer -Newname CECLab-$AssignedComputerName -Force -Reboot
+
 # Below a PS session for debug and testing in system context, # when not needed 
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
