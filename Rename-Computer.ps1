@@ -5,4 +5,4 @@ $null = Start-Transcript -Path (Join-Path "$env:SystemRoot\Temp" $Transcript) -E
 # Setting the hostname
 Write-Host -ForegroundColor Red "Rename Computer before Autopilot"
 $Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
-Rename-Computer -Newname CEC-$AssignedComputerName -Force -Reboot
+Rename-Computer -Newname CEC-$AssignedComputerName -Force -Restart
