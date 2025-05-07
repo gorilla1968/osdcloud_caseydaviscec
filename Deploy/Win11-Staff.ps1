@@ -125,18 +125,13 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
-# Write-Host -ForegroundColor Green "Downloading and creating script for OOBE phase"
-# Invoke-RestMethod http://autopilot.cec.network | Out-File -FilePath 'C:\Windows\Setup\scripts\autopilotoobe.ps1' -Encoding ascii -Force
+Write-Host -ForegroundColor Green "Downloading and creating script for OOBE phase"
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\Scripts\rename-computer.ps1' -Encoding ascii -Force
 
 $OOBECMD = @'
 @echo off
 # Execute OOBE Tasks
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilotoobe.ps1
-
-# Setting the hostname
-Write-Host -ForegroundColor Red "Rename Computer before Autopilot"
-$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
-Rename-Computer -Newname CEC-$AssignedComputerName -Force -Reboot
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass
