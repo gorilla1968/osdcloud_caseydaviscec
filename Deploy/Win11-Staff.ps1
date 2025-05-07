@@ -20,9 +20,6 @@ Install-Module OSD -Force
 Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
-Write-Host -ForegroundColor Green "Set the time zone"
-Set-TimeZone -Id "Mountain Standard Time"
-
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
