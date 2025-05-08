@@ -123,16 +123,22 @@ $OOBECMD = @'
 @echo off
 
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
- start /wait powershell.exe -NoL -ExecutionPolicy Bypass
-
-Start /Wait PowerShell -NoL -C Restart-Computer -Force
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
 $OOBECMD | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding ascii -Force
+
+#================================================
+#  [PostOS] SetupComplete CMD Command Line
+#================================================
+Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
+$SetupCompleteCMD = @'
+powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
+'@
+$SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
 #=======================================================================
 #   Restart-Computer
