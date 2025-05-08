@@ -37,20 +37,18 @@ $VerbosePreference = "Continue"
 # If the local device Manufacturer is 'LENOVO' make changes
 If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO") {
 
+    # Prompt the user to enter the Asset Tag number
+    do {
+    $input = Read-Host "Please enter the asset tag number located on the bottom of the laptop (4 to 5 digit number)"
+        } while ($input -notmatch '^\d{4,5}$')
+    Write-Output "You entered a valid asset tag number: $input"
+
     # Variables
     $url = "https://download.lenovo.com/pccbbs/mobiles/giaw03ww.exe" # URL to WinAIA Utility
     $pkg = Split-Path $url -Leaf
     $tempDir = Join-Path (Join-Path $env:ProgramData "Lenovo") "Temp"
     $extractSwitch = "/VERYSILENT /DIR=$($tempDir) /EXTRACT=YES"
-
-    # Asset data
-    # These are sample values and should be changed.
-    $ownerName = "stealthpuppy"
-    $ownerData = "Ministry of Silly Walks"
-    $ownerLocation = "Melbourne, VIC"
-    # Variable for last 5 characters of Unique ID
-    $uuid = ((Get-WmiObject Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID).SubString(30))
-
+    
     # Create temp directory for utility and log output file 
     Write-Output "Creating Temp Directory"
     if ((Test-Path -Path $tempDir) -eq $false) {
@@ -66,15 +64,9 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
         Set-Location $tempDir
         Start-Process ".\$pkg" -ArgumentList $extractSwitch -Wait
 
-        # Set Owner Data with WinAIA Utility
-        Write-Output "Writing Asset Owner Information"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'OWNERDATA.OWNERNAME=$($ownerName)'" -Wait
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'OWNERDATA.DEPARTMENT=$($ownerData)'" -Wait
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'OWNERDATA.LOCATION=$($ownerLocation)'" -Wait
-
         # Set Asset Number.  Available through WMI by querying the SMBIOSASSetTag field of the Win32_SystemEnclosure class
         Write-Output "Setting Asset Tag"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'USERASSETDATA.ASSET_NUMBER=$uuid'" -Wait
+        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'USERASSETDATA.ASSET_NUMBER=$input'" -Wait
 
         # AIA Output file
         Write-Output "Outputting AIA Text File"
