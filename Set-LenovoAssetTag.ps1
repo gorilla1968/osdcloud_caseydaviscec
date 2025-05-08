@@ -56,6 +56,7 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
         # Set Asset Number.  Available through WMI by querying the SMBIOSASSetTag field of the Win32_SystemEnclosure class
         Write-Output "Setting Asset Tag"
         Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set USERASSETDATA.ASSET_NUMBER=$input" -Wait
+        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set OWNERDATA.PHONE_NUMBER=$input" -Wait
 
         # AIA Output file
         Write-Output "Outputting AIA Text File"
