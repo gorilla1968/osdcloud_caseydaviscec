@@ -22,7 +22,7 @@ $Params = @{
     OSLanguage = "en-us"
     OSLicense = "Volume"
     ZTI = $true
-    Firmware = $false
+    Firmware = $true
 }
 Start-OSDCloud @Params
 
@@ -48,7 +48,6 @@ $OOBEDeployJson = @'
                     "Microsoft.MicrosoftOfficeHub",
                     "Microsoft.MicrosoftSolitaireCollection",
                     "Microsoft.MicrosoftStickyNotes",
-                    "Microsoft.MSPaint",
                     "Microsoft.People",
                     "Microsoft.PowerAutomateDesktop",
                     "Microsoft.StorePurchaseApp",
@@ -56,7 +55,6 @@ $OOBEDeployJson = @'
                     "microsoft.windowscommunicationsapps",
                     "Microsoft.WindowsFeedbackHub",
                     "Microsoft.WindowsMaps",
-                    "Microsoft.WindowsSoundRecorder",
                     "Microsoft.Xbox.TCUI",
                     "Microsoft.XboxGameOverlay",
                     "Microsoft.XboxGamingOverlay",
@@ -90,7 +88,7 @@ Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.Autop
 $AutopilotOOBEJson = @"
 {
     "AssignedComputerName" : "$AssignedComputerName",
-    "AddToGroup":  "Windows Autopilot Devices",
+    "AddToGroup":  "Autopilot - Device - Staff Win11",
     "Assign":  {
                    "IsPresent":  true
                },
@@ -117,15 +115,12 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
-Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\Scripts\rename-computer.ps1' -Encoding ascii -Force
 
 $OOBECMD = @'
 @echo off
-# Execute OOBE Tasks
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
