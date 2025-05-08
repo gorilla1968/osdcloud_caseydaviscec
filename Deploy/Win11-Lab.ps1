@@ -22,7 +22,7 @@ $Params = @{
     OSLanguage = "en-us"
     OSLicense = "Volume"
     ZTI = $true
-    Firmware = $false
+    Firmware = $true
 }
 Start-OSDCloud @Params
 
@@ -86,21 +86,12 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
-# Write-Host -ForegroundColor Green "Downloading and creating script for OOBE phase"
-# Invoke-RestMethod http://autopilot.cec.network | Out-File -FilePath 'C:\Windows\Setup\scripts\autopilotoobe.ps1' -Encoding ascii -Force
 
 $OOBECMD = @'
 @echo off
-# Execute OOBE Tasks
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilotoobe.ps1
-
-# Setting the hostname
-Write-Host -ForegroundColor Red "Rename Computer before Autopilot"
-$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
-Rename-Computer -Newname CECLab-$AssignedComputerName -Force -Reboot
 
 # Below a PS session for debug and testing in system context, # when not needed 
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
