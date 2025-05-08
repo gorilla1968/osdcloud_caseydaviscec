@@ -1,11 +1,3 @@
-#===================================================
-# Windows 11 Staff Image used for all Staff Devices
-# 
-# Make sure laptop has Secure Boot turned ON
-# Make sure laptop has TPM turned ON
-#
-#===================================================
-
 #================================================
 #   [PreOS] Update Module
 #================================================
@@ -125,7 +117,6 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
-Write-Host -ForegroundColor Green "Downloading and creating script for OOBE phase"
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\Scripts\rename-computer.ps1' -Encoding ascii -Force
 
 $OOBECMD = @'
