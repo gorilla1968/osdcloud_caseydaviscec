@@ -60,7 +60,7 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
 
         # AIA Output file
         Write-Output "Outputting AIA Text File"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -output-file '$logFile\aia_output.txt' -get OWNERDATA" -Wait
+        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -output-file '$tempDir\aia_output.txt' -get OWNERDATA" -Wait
 
         # Remove Package
         Write-Output "Removing Package"
