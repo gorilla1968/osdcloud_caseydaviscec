@@ -15,21 +15,10 @@
         each array.
 #>
 
-# Start PowerShell as 64 bit process
-If ($ENV:PROCESSOR_ARCHITEW6432 -eq "AMD64") {
-    Try {
-        &"$ENV:WINDIR\SysNative\WindowsPowershell\v1.0\PowerShell.exe" -File $PSCOMMANDPATH
-    }
-    Catch {
-        Throw "Failed to start $PSCOMMANDPATH"
-    }
-    Exit
-}
-
 # Transcript for logging
 $stampDate = Get-Date
 $scriptName = ([System.IO.Path]::GetFileNameWithoutExtension($(Split-Path $script:MyInvocation.MyCommand.Path -Leaf)))
-$logFile = "$env:ProgramData\Intune-PowerShell-Logs\$scriptName-" + $stampDate.ToFileTimeUtc() + ".log"
+$logFile = "$env:OSDCloud\Logs\$scriptName-" + $stampDate.ToFileTimeUtc() + ".log"
 Start-Transcript -Path $logFile -NoClobber
 $VerbosePreference = "Continue"
 
@@ -57,7 +46,7 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
  
     # Download utility via HTTPS
     Write-Output "Downloading WinAIA Utility"
-    Start-BitsTransfer -Source $url -Destination "$tempdir\$pkg"
+    Invoke-WebRequest -Uri $url -Outfile "$tempdir\$pkg"
     If (Test-Path -Path "$tempdir\$pkg") {
 
         # Set location of WinAIA Package and extract contents
@@ -66,11 +55,11 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
 
         # Set Asset Number.  Available through WMI by querying the SMBIOSASSetTag field of the Win32_SystemEnclosure class
         Write-Output "Setting Asset Tag"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set 'USERASSETDATA.ASSET_NUMBER=$input'" -Wait
+        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set USERASSETDATA.ASSET_NUMBER=$input" -Wait
 
         # AIA Output file
         Write-Output "Outputting AIA Text File"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -output-file '$tempdir\aia_output.txt' -get OWNERDATA" -Wait
+        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -output-file '$logFile\aia_output.txt' -get OWNERDATA" -Wait
 
         # Remove Package
         Write-Output "Removing Package"
