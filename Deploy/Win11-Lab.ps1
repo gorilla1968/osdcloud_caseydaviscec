@@ -1,11 +1,3 @@
-#===================================================
-# Windows 11 Lab Image used for all Lab Devices
-# 
-# Make sure laptop has Secure Boot turned ON
-# Make sure laptop has TPM turned ON
-#
-#===================================================
-
 #================================================
 #   [PreOS] Update Module
 #================================================
