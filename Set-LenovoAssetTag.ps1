@@ -2,17 +2,9 @@
     .NOTES
         Source: 21/02/2018
         http://thinkdeploy.blogspot.com/2018/02/setting-asset-tag-on-thinkpads-with-mdm.html
-        
-        10/11/2018
-        Aaron Parker, @stealthpuppy
-        - Add check for Win32_ComputerSystem.Manufacturer = LENOVO
-        - Add logging; fix quotes; cleanup code; check download is successful; & more
-
 
     .DESCRIPTION
-        This script is designed to hide Vantage features that may not be appropriate
-        for enterprise customers.  Each feature is commented out beside each GUID in
-        each array.
+        This script will prompt for a Asset tag number and write the value to the BIOS of a Lenovo computer
 #>
 
 # Transcript for logging
@@ -57,10 +49,6 @@ If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO
         Write-Output "Setting Asset Tag"
         Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set USERASSETDATA.ASSET_NUMBER=$input" -Wait
         Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -set OWNERDATA.PHONE_NUMBER=$input" -Wait
-
-        # AIA Output file
-        Write-Output "Outputting AIA Text File"
-        Start-Process "$tempDir\WinAIA64.exe" -ArgumentList "-silent -output-file '$tempDir\aia_output.txt' -get OWNERDATA" -Wait
 
         # Remove Package
         Write-Output "Removing Package"
