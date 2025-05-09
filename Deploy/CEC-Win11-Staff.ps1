@@ -80,7 +80,6 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #================================================
 #  [PostOS] AutopilotOOBE Configuration Staging
 #================================================
-Write-Host -ForegroundColor Green "Define Computername:"
 $Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
 $AssignedComputerName = "CEC-$Serial"
 
@@ -115,9 +114,14 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Set-LenovoAssetTag.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovoassettag.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\rename-computer.ps1' -Encoding ascii -Force
+
 
 $OOBECMD = @'
 @echo off
+
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
 # start /wait powershell.exe -NoL -ExecutionPolicy Bypass
@@ -125,6 +129,15 @@ $OOBECMD = @'
 exit 
 '@
 $OOBECMD | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding ascii -Force
+
+#================================================
+#  [PostOS] SetupComplete CMD Command Line
+#================================================
+Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
+$SetupCompleteCMD = @'
+powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
+'@
+$SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
 #=======================================================================
 #   Restart-Computer
