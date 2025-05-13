@@ -163,7 +163,7 @@ if (-NOT (Test-Path $PantherUnattendPath)) {
 $AuditUnattendPath = Join-Path $PantherUnattendPath 'Invoke-OSDSpecialize.xml'
 
 Write-Host -ForegroundColor Green "Set Unattend.xml at $AuditUnattendPath"
-$UnattendXml | Out-File -FilePath $AuditUnattendPath -Encoding utf8v
+$UnattendXml | Out-File -FilePath $AuditUnattendPath -Encoding utf8
 
 #=======================================================================
 #   Restart-Computer
