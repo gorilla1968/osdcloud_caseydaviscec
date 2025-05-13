@@ -465,10 +465,10 @@ Function CustomWindowsAutopilotInfo {
 }
 
 Write-SectionHeader "Certificate Tasks"
-Write-DarkGrayHost "Importing PFX certificate"
+Write-Host "Importing PFX certificate"
 PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
 
-Write-DarkGrayHost "Grabbing PFX certificate infos"
+Write-GrayHost "Grabbing PFX certificate infos"
 $subjectName = "OSDCloudRegistration"
 $cert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }
 
