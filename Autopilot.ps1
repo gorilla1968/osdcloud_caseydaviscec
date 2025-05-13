@@ -464,16 +464,16 @@ Function CustomWindowsAutopilotInfo {
 	}
 }
 
-#Write-SectionHeader "Certificate Tasks"
-#Write-DarkGrayHost "Importing PFX certificate"
-#PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
+Write-SectionHeader "Certificate Tasks"
+Write-DarkGrayHost "Importing PFX certificate"
+PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
 
-#Write-DarkGrayHost "Grabbing PFX certificate infos"
-#$subjectName = "OSDCloudRegistration"
-#$cert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }
+Write-DarkGrayHost "Grabbing PFX certificate infos"
+$subjectName = "OSDCloudRegistration"
+$cert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }
 
 # Comment out after testing
-#$cert
+$cert
 
 Write-SectionHeader "Get App Secret"
 $shh = Get-Content -Path "C:\OSDCloud\Scripts\osdcloud.shh"
