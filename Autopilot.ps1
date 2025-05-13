@@ -209,7 +209,7 @@ Function CustomWindowsAutopilotInfo {
 
 			# Connect
 			if ($AppId -ne "") {
-				$graph = Connect-MgGraph -Tenant $TenantId -AppId $AppId -AppSecret $shh
+				$graph = Connect-MgGraph -Tenant $TenantId -ClientSecretCredential $ClientSecretCredential
 				Write-Host "Connected to Intune tenant " -NoNewline
 				Write-Host "$TenantId " -ForegroundColor Yellow -NoNewline
 				Write-Host "using cert-based authentication"
@@ -464,19 +464,25 @@ Function CustomWindowsAutopilotInfo {
 	}
 }
 
-Write-SectionHeader "Certificate Tasks"
-Write-Host "Importing PFX certificate"
-PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
+#Write-SectionHeader "Certificate Tasks"
+#Write-Host "Importing PFX certificate"#
+#PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
 
-Write-GrayHost "Grabbing PFX certificate infos"
-$subjectName = "OSDCloudRegistration"
-$cert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }
+#Write-GrayHost "Grabbing PFX certificate infos"
+#$subjectName = "OSDCloudRegistration"
+#$cert = Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }
 
 # Comment out after testing
-$cert
+#$cert
 
 Write-SectionHeader "Get App Secret"
-$shh = Get-Content -Path "C:\OSDCloud\Scripts\osdcloud.shh"
+$ApplicationId = "d0f55dbf-e2ec-4020-bc22-f299c06a737a"
+$SecuredPassword = Get-Content -Path "C:\OSDCloud\Scripts\osdcloud.shh"
+$tenantID = "756e5b19-b4c4-4dc1-ae63-693179768af4"
+
+$SecuredPasswordPassword = ConvertTo-SecureString -String $SecuredPassword -AsPlainText -Force
+$ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ApplicationId, $SecuredPasswordPassword
+
 
 Write-SectionHeader "Grabbing Autopilot parameters"
 $ProgramDataOSDeploy = "$env:ProgramData\OSDeploy"
