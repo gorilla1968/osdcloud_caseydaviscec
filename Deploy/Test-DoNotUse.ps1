@@ -174,7 +174,7 @@ $AuditUnattendPath = Join-Path $PantherUnattendPath 'Invoke-OSDSpecialize.xml'
 Write-Host -ForegroundColor Green "Set Unattend.xml at $AuditUnattendPath"
 $UnattendXml | Out-File -FilePath $AuditUnattendPath -Encoding utf8
 
-Write-DarkGrayHost "Copying PFX file"
+Write-Host "Copying USB Drive Scripts"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 #=======================================================================
