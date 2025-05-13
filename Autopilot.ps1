@@ -466,7 +466,7 @@ Function CustomWindowsAutopilotInfo {
 
 Write-SectionHeader "Certificate Tasks"
 Write-DarkGrayHost "Importing PFX certificate"
-PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\Import-Certificate.ps1 -WindowStyle Hidden | Out-Null
+PowerShell -ExecutionPolicy Bypass C:\OSDCloud\Scripts\import-certificate.ps1 -WindowStyle Hidden | Out-Null
 
 Write-DarkGrayHost "Grabbing PFX certificate infos"
 $subjectName = "OSDCloudRegistration"
@@ -504,15 +504,15 @@ CustomWindowsAutopilotInfo @Params
 Write-SectionHeader "Disconnect Graph API"
 Disconnect-MgGraph | Out-Null
 
-Write-SectionHeader "Cleanup scripts and certificates"
-Write-DarkGrayHost "Delete certificate from local machine store"
-$subjectName = "OSDCloudRegistration"
-$cert = (Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }).Thumbprint
-Remove-Item -Path Cert:\LocalMachine\My\$cert -Force
+#Write-SectionHeader "Cleanup scripts and certificates"
+#Write-DarkGrayHost "Delete certificate from local machine store"
+#$subjectName = "OSDCloudRegistration"
+#$cert = (Get-ChildItem -Path "Cert:\LocalMachine\My" | Where-Object { $_.Subject -Match "$subjectName" }).Thumbprint
+#Remove-Item -Path Cert:\LocalMachine\My\$cert -Force
 
-Write-DarkGrayHost "Remove Import-Certificagte.ps1 script"
-if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\Import-Certificate.ps1) {
-	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\Import-Certificate.ps1 -Force
-}
+#Write-DarkGrayHost "Remove Import-Certificagte.ps1 script"
+#if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\Import-Certificate.ps1) {
+#	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\Import-Certificate.ps1 -Force
+#}
 
 Stop-Transcript | Out-Null
