@@ -475,6 +475,9 @@ Function CustomWindowsAutopilotInfo {
 # Comment out after testing
 #$cert
 
+Write-DarkGrayHost "Copying PFX file & the import script"
+Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
+
 Write-SectionHeader "Get App Secret"
 $shh = Get-Content -Path "C:\OSDCloud\Scripts\osdcloud.shh"
 
