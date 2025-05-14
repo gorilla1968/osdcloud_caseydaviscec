@@ -149,22 +149,21 @@ $UnattendXml = @'
             <RunSynchronous>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <Description>OSDCloud Specialize</Description>
-                    <Path>Powershell -ExecutionPolicy Bypass -Command Invoke-OSDSpecialize -Verbose</Path>
+                    <Description>Start Autopilot Import & Assignment Process</Description>
+                    <Path>PowerShell -ExecutionPolicy Bypass C:\Windows\Setup\scripts\autopilot.ps1</Path>
                 </RunSynchronousCommand>
         </component>
     </settings>
 </unattend>
 '@
 
-$PantherUnattendPath = 'C:\Windows\Panther\'
-if (-NOT (Test-Path $PantherUnattendPath)) {
-    New-Item -Path $PantherUnattendPath -ItemType Directory -Force | Out-Null
+if (-NOT (Test-Path 'C:\Windows\Panther')) {
+    New-Item -Path 'C:\Windows\Panther'-ItemType Directory -Force -ErrorAction Stop | Out-Null
 }
-$AuditUnattendPath = Join-Path $PantherUnattendPath 'Invoke-OSDSpecialize.xml'
 
-Write-Host -ForegroundColor Green "Set Unattend.xml at $AuditUnattendPath"
-$UnattendXml | Out-File -FilePath $AuditUnattendPath -Encoding utf8
+$Panther = 'C:\Windows\Panther'
+$UnattendPath = "$Panther\Unattend.xml"
+$UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
 
 Write-Host "Copying USB Drive Scripts"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
