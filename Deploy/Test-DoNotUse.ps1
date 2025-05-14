@@ -132,15 +132,6 @@ exit
 $OOBECMD | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding ascii -Force
 
 #================================================
-#  [PostOS] Shutdown CMD Command Line
-#================================================
-Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\Shutdown.cmd"
-$ShutdownCMD = @'
-Copy-Item -Path "X:\OSDCloud\Scripts\osdcloud.shh" -Destination "C:\Windows\Setup\Scripts\osdcloudcopy.shh" -Force
-'@
-$ShutdownCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\Shutdown.cmd' -Encoding ascii -Force
-
-#================================================
 #  [PostOS] SetupComplete CMD Command Line
 #================================================
 Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
