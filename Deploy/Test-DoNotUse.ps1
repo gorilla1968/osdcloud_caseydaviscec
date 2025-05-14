@@ -15,6 +15,11 @@ Import-Module OSD -Force
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
+$Global:MyOSDCloud = [ordered]@{
+    SetTimeZone = $true
+}
+Write-SectionHeader "MyOSDCloud variables"
+Write-Host ($Global:MyOSDCloud | Out-String)
 
 $Params = @{
     OSVersion = "Windows 11"
