@@ -16,11 +16,6 @@ Import-Module OSD -Force
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
 
-Write-Host -ForegroundColor Cyan "Set the time during imaging"
-$Global:MyOSDCloud = @{
-    SetTimeZone = $true
-}
-
 $Params = @{
     OSVersion = "Windows 11"
     OSBuild = "24H2"
