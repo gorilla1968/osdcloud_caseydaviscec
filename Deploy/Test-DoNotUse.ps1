@@ -152,6 +152,7 @@ $UnattendXml = @'
                     <Description>Start Autopilot Import & Assignment Process</Description>
                     <Path>PowerShell -ExecutionPolicy Bypass C:\Windows\Setup\scripts\autopilot.ps1</Path>
                 </RunSynchronousCommand>
+            </RunSynchronous>
         </component>
     </settings>
 </unattend>
