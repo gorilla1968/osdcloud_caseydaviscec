@@ -121,12 +121,13 @@ Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/
 $OOBECMD = @'
 @echo off
 
+# Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
 # Commented out because App Secret based Autopilot Enrollment Configured
 # start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilot.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
