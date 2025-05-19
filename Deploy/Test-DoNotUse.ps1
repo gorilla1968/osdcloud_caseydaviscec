@@ -14,7 +14,7 @@ Import-Module OSD -Force
 
 # Prompt the user to enter the Asset Tag number
     do {
-    $assetTag = Read-Host "Please enter the asset tag number located on the bottom of the laptop (4 to 5 digit number)"
+    $assetTag = Read-Host "Please enter the asset tag number (4 to 5 digit number)"
     if ($assetTag -match '^\d{4,5}$') {
         $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
     }
