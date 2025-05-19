@@ -12,6 +12,15 @@ Install-Module OSD -Force
 Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
+# Prompt the user to enter the Asset Tag number
+    do {
+    $assetTag = Read-Host "Please enter the asset tag number located on the bottom of the laptop (4 to 5 digit number)"
+    if ($assetTag -match '^\d{4,5}$') {
+        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
+    }
+} while ($assetTag -notmatch '^\d{4,5}$')
+    Write-Output "You entered a valid asset tag number: $input"
+
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
@@ -167,7 +176,7 @@ $Panther = 'C:\Windows\Panther'
 $UnattendPath = "$Panther\Unattend.xml"
 $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
 
-Write-Host "Copying USB Drive Scripts"
+Write-Host "Copying USB Drive Scripts and AssetTag.txt"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 #=======================================================================

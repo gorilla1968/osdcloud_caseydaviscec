@@ -18,13 +18,8 @@ $VerbosePreference = "Continue"
 # If the local device Manufacturer is 'LENOVO' make changes
 If ((Get-CimInstance -ClassName "Win32_ComputerSystem").Manufacturer -eq "LENOVO") {
 
-    # Prompt the user to enter the Asset Tag number
-    do {
-    $input = Read-Host "Please enter the asset tag number located on the bottom of the laptop (4 to 5 digit number)"
-        } while ($input -notmatch '^\d{4,5}$')
-    Write-Output "You entered a valid asset tag number: $input"
-
     # Variables
+    $input = Get-Content -Path $env:SystemDrive\OSDCloud\Scripts\AssetTag.txt
     $url = "https://download.lenovo.com/pccbbs/mobiles/giaw03ww.exe" # URL to WinAIA Utility
     $pkg = Split-Path $url -Leaf
     $tempDir = Join-Path (Join-Path $env:ProgramData "Lenovo") "Temp"
