@@ -19,7 +19,7 @@ Import-Module OSD -Force
         $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
     }
 } while ($assetTag -notmatch '^\d{4,5}$')
-    Write-Output "You entered a valid asset tag number: $input"
+    Write-Output "You entered a valid asset tag number: $assetTag"
 
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
