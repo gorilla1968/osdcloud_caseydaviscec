@@ -127,13 +127,14 @@ Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\rename-computer.ps1' -Encoding ascii -Force
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Autopilot.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\autopilot.ps1' -Encoding ascii -Force
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Set-LenovoBios.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovobios.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Teams-Webhook.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\teams-webhook.ps1' -Encoding ascii -Force
 $OOBECMD = @'
 @echo off
 
 # Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
-# Commented out because App Secret based Autopilot Enrollment Configured
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilot.ps1
+# Send the Imaging Details to Teams via Webhook
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\teams-webhook.ps1
 
 # Below a PS session for debug and testing in system context, comment out when not needed 
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass
