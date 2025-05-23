@@ -29,9 +29,28 @@ $ComputerName = "$prefix-$serialNumber"
 $IPAddress = (Get-WmiObject win32_Networkadapterconfiguration | Where-Object{ $_.ipaddress -notlike $null }).IPaddress | Select-Object -First 1
 $Connection = Get-NetAdapter -physical | Where-Object status -eq 'up'
 
+# Fetch the webhook URL from Azure Key Vault
+Install-Module Az.Accounts -Force
+Install-Module Az.KeyVault -Force
 
-# Webhook URL for Microsoft Teams
-$WebhookUrl = WEBHOOK
+Import-Module Az.Accounts
+Import-Module Az.KeyVault
+
+$ApplicationId = "d0f55dbf-e2ec-4020-bc22-f299c06a737a"
+$SecuredPassword = Get-Content -Path $env:SystemDrive\CECWin11\Config\Scripts\osdcloud.shh
+$tenantID = "756e5b19-b4c4-4dc1-ae63-693179768af4"
+
+$SecuredPasswordPassword = ConvertTo-SecureString -String $SecuredPassword -AsPlainText -Force
+$ClientSecretCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ApplicationId, $SecuredPasswordPassword
+
+$keyVaultName = "cecwin11"
+$secretName = "WEBHOOK"
+
+# Connect to Azure account
+Connect-AzAccount -ServicePrincipal -Credential $ClientSecretCredential -Tenant $TenantID 
+
+# Retrieve the secret from Azure Key Vault
+$webhook = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $secretName -AsPlainText -Verbose
 
 # Create Adaptive Card payload
 $AdaptiveCard = @{
@@ -83,4 +102,4 @@ $AdaptiveCard = @{
 $Payload = $AdaptiveCard | ConvertTo-Json -Depth 10
 
 # Post to Teams webhook
-Invoke-RestMethod -Uri $WebhookUrl -Method Post -Body $Payload -ContentType 'application/json'
+Invoke-RestMethod -Uri $webhook -Method Post -Body $Payload -ContentType 'application/json'
