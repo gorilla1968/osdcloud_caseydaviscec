@@ -31,7 +31,7 @@ $Connection = Get-NetAdapter -physical | Where-Object status -eq 'up'
 
 
 # Webhook URL for Microsoft Teams
-$WebhookUrl = Get-Content -Path $env:SystemDrive\OSDCloud\Scripts\webhook.shh
+$WebhookUrl = WEBHOOK
 
 # Create Adaptive Card payload
 $AdaptiveCard = @{
