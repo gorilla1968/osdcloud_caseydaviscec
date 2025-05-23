@@ -134,7 +134,7 @@ $OOBECMD = @'
 # Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
 # Executes Teams Webhook Notification to Teams > Windows 11 Rollout
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\teams-webhook.ps1
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\teams-webhook.ps1
 
 # Below a PS session for debug and testing in system context, comment out when not needed 
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass
