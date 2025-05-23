@@ -30,11 +30,11 @@ $IPAddress = (Get-WmiObject win32_Networkadapterconfiguration | Where-Object{ $_
 $Connection = Get-NetAdapter -physical | Where-Object status -eq 'up'
 
 # Fetch the webhook URL from Azure Key Vault
-Install-Module Az.Accounts -Force
-Install-Module Az.KeyVault -Force
+Install-Module Az.Accounts -Force | Out-Null
+Install-Module Az.KeyVault -Force | Out-Null
 
-Import-Module Az.Accounts
-Import-Module Az.KeyVault
+Import-Module Az.Accounts -Force | Out-Null
+Import-Module Az.KeyVault -Force | Out-Null
 
 $ApplicationId = "d0f55dbf-e2ec-4020-bc22-f299c06a737a"
 $SecuredPassword = Get-Content -Path $env:SystemDrive\CECWin11\Config\Scripts\osdcloud.shh
