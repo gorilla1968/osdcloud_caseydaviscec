@@ -12,6 +12,60 @@ Install-Module OSD -Force
 Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
+# Define valid campus options
+$validCampuses = @("A", "CR", "CSHS", "CSMS", "CS100", "FCHS", "FCMS", "DCN", "W", "O")
+
+do {
+    # Prompt for campus
+    do {
+        Write-Host "Enter campus code (Options: A, CR, CSHS, CSMS, CS100, FCHS, FCMS, DCN, W, O)" -ForegroundColor Cyan
+        $campus = Read-Host
+        $campus = $campus.ToUpper()
+        $campusValid = $validCampuses -contains $campus
+        if (-not $campusValid) {
+            Write-Host "Invalid campus code. Please try again." -ForegroundColor Red
+        }
+    } until ($campusValid)
+
+    # Prompt for room number
+    do {
+        Write-Host "Enter room number (100-500)" -ForegroundColor Cyan
+        $roomNumber = Read-Host
+        $roomValid = ($roomNumber -as [int]) -and ($roomNumber -ge 100) -and ($roomNumber -le 500)
+        if (-not $roomValid) {
+            Write-Host "Invalid room number. Please enter a number between 100 and 500." -ForegroundColor Red
+        }
+    } until ($roomValid)
+
+    # Get the serial number of the machine
+    $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
+
+    # Check if serial contains "To be filled by"
+    if ($serial -match "To be filled by") {
+        do {
+            Write-Host "Serial number not set. Enter asset tag number (3-5 digits)" -ForegroundColor Cyan
+            $assetTag = Read-Host
+            $assetTagValid = $assetTag -match '^\d{3,5}$'
+            if (-not $assetTagValid) {
+                Write-Host "Invalid asset tag. Please enter a 3 to 5 digit number." -ForegroundColor Red
+            }
+        } until ($assetTagValid)
+        $serial = $assetTag
+    }
+
+    # Construct the computer name
+    $computerName = "CEC$campus-Lab$roomNumber-$serial"
+
+    # Output the result
+    Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
+
+    # Ask for confirmation
+    do {
+        $confirmation = Read-Host "Is this correct? (y/n)"
+    } until ($confirmation -match '^[yYnN]$')
+
+} until ($confirmation -match '^[yY]$')
+
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
