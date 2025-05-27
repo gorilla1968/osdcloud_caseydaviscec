@@ -7,7 +7,7 @@ $VerbosePreference = "Continue"
 
 # Set Hostname before Autopilot
 Write-Host -ForegroundColor Red "Rename Computer before Autopilot"
-$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
-Rename-Computer -Newname CECLab-$Serial -Restart
+$computerName = Get-Content -Path "$env:SystemDrive\OSDCloud\Scripts\ComputerName.txt"
+Rename-Computer -Newname $computerName -Restart
 
 Stop-Transcript
