@@ -218,7 +218,7 @@ $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Forc
 
 Write-Host "Copying USB Drive Scripts"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
-
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 #=======================================================================
 #   Restart-Computer
 #=======================================================================
