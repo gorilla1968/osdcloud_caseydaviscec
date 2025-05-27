@@ -6,15 +6,17 @@ if ((Get-MyComputerModel) -match 'Virtual') {
     Set-DisRes 1600
 }
 
-Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-Install-Module OSD -Force
-
-Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
-Import-Module OSD -Force
+# Prompt the user to enter the Asset Tag number
+    do {
+    $assetTag = Read-Host "Please enter the asset tag number (3 to 5 digit number)"
+    if ($assetTag -match '^\d{3,5}$') {
+        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
+    }
+} while ($assetTag -notmatch '^\d{3,5}$')
+    Write-Output "You entered a valid asset tag number: $assetTag"
 
 # Define valid campus options
 $validCampuses = @("A", "CR", "CSHS", "CSMS", "CS100", "FCHS", "FCMS", "DCN", "W", "O")
-
 do {
     # Prompt for campus
     do {
@@ -26,7 +28,6 @@ do {
             Write-Host "Invalid campus code. Please try again." -ForegroundColor Red
         }
     } until ($campusValid)
-
     # Prompt for room number
     do {
         Write-Host "Enter room number (100-500)" -ForegroundColor Cyan
@@ -36,35 +37,30 @@ do {
             Write-Host "Invalid room number. Please enter a number between 100 and 500." -ForegroundColor Red
         }
     } until ($roomValid)
-
     # Get the serial number of the machine
     $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
-
-    # Check if serial contains "To be filled by"
+    # Check if serial contains "To be filled by" and replace it with the asset tag
     if ($serial -match "To be filled by") {
-        do {
-            Write-Host "Serial number not set. Enter asset tag number (3-5 digits)" -ForegroundColor Cyan
-            $assetTag = Read-Host
-            $assetTagValid = $assetTag -match '^\d{3,5}$'
-            if (-not $assetTagValid) {
-                Write-Host "Invalid asset tag. Please enter a 3 to 5 digit number." -ForegroundColor Red
-            }
-        } until ($assetTagValid)
         $serial = $assetTag
     }
-
     # Construct the computer name
     $computerName = "CEC$campus-Lab$roomNumber-$serial"
-
     # Output the result
     Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
-
     # Ask for confirmation
     do {
         $confirmation = Read-Host "Is this correct? (y/n)"
     } until ($confirmation -match '^[yYnN]$')
-
 } until ($confirmation -match '^[yY]$')
+# Save the computer name to a file
+$computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt" -Encoding ascii -Force
+
+#================================================
+Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
+Install-Module OSD -Force
+
+Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
+Import-Module OSD -Force
 
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
@@ -137,14 +133,43 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #  [PostOS] AutopilotOOBE Configuration Staging
 #================================================
 
+$AssignedComputerName = Get-Content -Path "X:\OSDCloud\Config\Scripts\ComputerName.txt"
+
+Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json"
+$AutopilotOOBEJson = @"
+{
+    "AssignedComputerName" : "$AssignedComputerName",
+    "AddToGroup":  "Compute Lab - BASE Win11 Labs",
+    "Assign":  {
+                   "IsPresent":  true
+               },
+    "GroupTag":  "Lab",
+    "Hidden":  [
+                   "AddToGroup",
+                   "AssignedUser",
+                   "PostAction",
+                   "GroupTag",
+                   "Assign",
+                   "Docs"
+               ],
+    "PostAction":  "Restart",
+    "Run":  "NetworkingWireless",
+    "Title":  "CEC Autopilot Manual Register"
+}
+"@
+
+If (!(Test-Path "C:\ProgramData\OSDeploy")) {
+    New-Item "C:\ProgramData\OSDeploy" -ItemType Directory -Force | Out-Null
+}
+$AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json" -Encoding ascii -Force
 
 #================================================
 #  [PostOS] OOBE CMD Command Line
 #================================================
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Set-LenovoAssetTag.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovoassettag.ps1' -Encoding ascii -Force
-Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Rename-LabComputer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\rename-labcomputer.ps1' -Encoding ascii -Force
-
-
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Lab_Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\Lab_Rename-Computer.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Lab_Autopilot.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\Lab_Autopilot.ps1' -Encoding ascii -Force
+#nvoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Set-LenovoBios.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovobios.ps1' -Encoding ascii -Force
 $OOBECMD = @'
 @echo off
 
@@ -162,9 +187,37 @@ $OOBECMD | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding asci
 #================================================
 Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
 $SetupCompleteCMD = @'
-powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-labcomputer.ps1
+powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\Lab_Rename-Computer.ps1
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
+
+$UnattendXml = @'
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Description>Start Autopilot Import & Assignment Process</Description>
+                    <Path>PowerShell -ExecutionPolicy Bypass C:\Windows\Setup\scripts\Lab_Autopilot.ps1</Path>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+    </settings>
+</unattend>
+'@
+
+if (-NOT (Test-Path 'C:\Windows\Panther')) {
+    New-Item -Path 'C:\Windows\Panther'-ItemType Directory -Force -ErrorAction Stop | Out-Null
+}
+
+$Panther = 'C:\Windows\Panther'
+$UnattendPath = "$Panther\Unattend.xml"
+$UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
+
+Write-Host "Copying USB Drive Scripts"
+Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 #=======================================================================
 #   Restart-Computer
