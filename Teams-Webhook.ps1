@@ -22,19 +22,20 @@ if (Test-Path $JsonPath){
     $OSDCouldTimeCompleted = "$($OSDCouldTime.Hours) hour(s) $($OSDCouldTime.Minutes) minutes $($OSDCouldTime.Seconds) seconds"
 }
 
+# Install Azure AZ Module
+$module = Import-Module AZ -PassThru -ErrorAction Ignore
+if (-not $module) {
+    Write-Host "Installing Azure AZ module"
+    Install-Module AZ -Force | Out-Null
+}
+Import-Module AZ -Force | Out-Null
+
 # Computer Variables
 $prefix = "CEC"
 $serialNumber = (Get-WmiObject -Class Win32_BIOS).SerialNumber
 $ComputerName = "$prefix-$serialNumber"
 $IPAddress = (Get-WmiObject win32_Networkadapterconfiguration | Where-Object{ $_.ipaddress -notlike $null }).IPaddress | Select-Object -First 1
 $Connection = Get-NetAdapter -physical | Where-Object status -eq 'up'
-
-# Fetch the webhook URL from Azure Key Vault
-Install-Module Az.Accounts -Force | Out-Null
-Install-Module Az.KeyVault -Force | Out-Null
-
-Import-Module Az.Accounts -Force | Out-Null
-Import-Module Az.KeyVault -Force | Out-Null
 
 $ApplicationId = "d0f55dbf-e2ec-4020-bc22-f299c06a737a"
 $SecuredPassword = Get-Content -Path $env:SystemDrive\CECWin11\Config\Scripts\osdcloud.shh
