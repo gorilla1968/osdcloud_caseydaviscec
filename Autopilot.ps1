@@ -365,7 +365,7 @@ Function CustomWindowsAutopilotInfo {
 				$deviceCount = $imported.Length
 				Write-Host "Waiting for $processingCount of $deviceCount to be imported"
 				if ($processingCount -gt 0) {
-					Start-Sleep 30
+					Start-Sleep 90
 				}
 			}
 			$importDuration = (Get-Date) - $importStart
@@ -397,7 +397,7 @@ Function CustomWindowsAutopilotInfo {
 				$deviceCount = $autopilotDevices.Length
 				Write-Host "Waiting for $processingCount of $deviceCount to be synced"
 				if ($processingCount -gt 0) {
-					Start-Sleep 30
+					Start-Sleep 90
 				}
 			}
 			$syncDuration = (Get-Date) - $syncStart
@@ -451,7 +451,7 @@ Function CustomWindowsAutopilotInfo {
 					$deviceCount = $autopilotDevices.Length
 					Write-Host "Waiting for $processingCount of $deviceCount to be assigned"
 					if ($processingCount -gt 0) {
-						Start-Sleep 30
+						Start-Sleep 90
 					}	
 				}
 				$assignDuration = (Get-Date) - $assignStart
