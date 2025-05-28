@@ -503,9 +503,9 @@ CustomWindowsAutopilotInfo @Params
 Write-SectionHeader "Disconnect Graph API"
 Disconnect-MgGraph | Out-Null
 
-#Write-DarkGrayHost "Remove Import-Certificagte.ps1 script"
-#if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh) {
-#	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh -Force
-#}
+Write-DarkGrayHost "Remove Senstive Data"
+if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh) {
+	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh -Force
+}
 
 Stop-Transcript | Out-Null

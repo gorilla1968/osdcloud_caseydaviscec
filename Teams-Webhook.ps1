@@ -23,14 +23,6 @@ if (Test-Path $JsonPath){
 }
 
 # Install Azure AZ Module
-$module = Import-Module PowerShellGet -PassThru -ErrorAction Ignore
-if (-not $module) {
-    Write-Host "Installing Azure PowerShellGet module"
-    Install-Module PowerShellGet -Force | Out-Null
-}
-Import-Module AZ -Force | Out-Null
-
-# Install Azure AZ Module
 $module = Import-Module AZ -PassThru -ErrorAction Ignore
 if (-not $module) {
     Write-Host "Installing Azure AZ module"
