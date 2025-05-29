@@ -1,9 +1,47 @@
+```markdown
+## CEC-Win11-Staff.ps1 Flow Diagram
+
 ```mermaid
 flowchart TD
-    A[Kick off imaging from USB Drive] --> B[Connects to gist and starts OSDPad]
-    B --> C[Prompts for image process to start]
-    C --> D[Pulls offline Windows 11 installation from USB]
-    D --> E[Applies Microsoft Windows Update Drivers]
-    E --> F[Applies Firmware Updates]
-    F --> G[Applies Offline OEM Drivers]
+    A([Start Script])
+    B{Is Computer Model Virtual?}
+    C[Set Display Resolution to 1600x]
+    D[Update OSD PowerShell Module]
+    E[Import OSD PowerShell Module]
+    F{Prompt for Asset Tag (4-5 digits)}
+    G[Save Asset Tag to file]
+    H[Show valid asset tag message]
+    I[Set OSDCloud Params]
+    J[Start-OSDCloud]
+    K[Create OSDeploy.OOBEDeploy.json]
+    L[Create OSDeploy.AutopilotOOBE.json]
+    M[Download Setup Scripts (AssetTag, Rename, Autopilot, Bios)]
+    N[Create oobe.cmd]
+    O[Create SetupComplete.cmd]
+    P[Create Unattend.xml]
+    Q[Ensure Panther Directory]
+    R[Copy USB Scripts to C:\OSDCloud]
+    S[Restart in 20 seconds]
+    T[wpeutil reboot]
+
+    A --> B
+    B -- Yes --> C
+    B -- No --> D
+    C --> D
+    D --> E
+    E --> F
+    F -- Valid --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+    K --> L
+    L --> M
+    M --> N
+    N --> O
+    O --> P
+    P --> Q
+    Q --> R
+    R --> S
+    S --> T
 ```
