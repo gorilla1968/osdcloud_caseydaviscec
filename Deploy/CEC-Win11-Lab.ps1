@@ -176,7 +176,7 @@ $OOBECMD = @'
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
- start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass
 
 exit 
 '@
@@ -218,7 +218,7 @@ $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Forc
 
 Write-Host "Copying USB Drive Scripts"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass
+
 #=======================================================================
 #   Restart-Computer
 #=======================================================================
