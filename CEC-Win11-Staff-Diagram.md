@@ -1,6 +1,3 @@
-```markdown
-## CEC-Win11-Staff.ps1 Flow Diagram
-
 ```mermaid
 flowchart TD
     A([Start Script])
@@ -8,14 +5,14 @@ flowchart TD
     C[Set Display Resolution to 1600x]
     D[Update OSD PowerShell Module]
     E[Import OSD PowerShell Module]
-    F{Prompt for Asset Tag (4-5 digits)}
+    F{Prompt for Asset Tag 4-5 digits}
     G[Save Asset Tag to file]
     H[Show valid asset tag message]
     I[Set OSDCloud Params]
     J[Start-OSDCloud]
-    K[Create OSDeploy.OOBEDeploy.json]
-    L[Create OSDeploy.AutopilotOOBE.json]
-    M[Download Setup Scripts (AssetTag, Rename, Autopilot, Bios)]
+    K[Create OOBEDeploy json]
+    L[Create AutopilotOOBE json]
+    M[Download Setup Scripts AssetTag, Rename, Autopilot, Bios]
     N[Create oobe.cmd]
     O[Create SetupComplete.cmd]
     P[Create Unattend.xml]
