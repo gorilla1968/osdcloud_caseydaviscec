@@ -502,7 +502,7 @@ Disconnect-MgGraph | Out-Null
 
 
 if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh) {
-	Write-DarkGrayHost "Removeing Senstive Data"
+	Write-DarkGrayHost "Removing Sensitive Data"
 	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh -Force
 }
 
