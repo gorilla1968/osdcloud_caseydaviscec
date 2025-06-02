@@ -98,7 +98,6 @@ $OOBEDeployJson = @'
                     "Microsoft.MicrosoftOfficeHub",
                     "Microsoft.MicrosoftSolitaireCollection",
                     "Microsoft.MicrosoftStickyNotes",
-                    "Microsoft.MSPaint",
                     "Microsoft.People",
                     "Microsoft.PowerAutomateDesktop",
                     "Microsoft.StorePurchaseApp",
@@ -106,7 +105,6 @@ $OOBEDeployJson = @'
                     "microsoft.windowscommunicationsapps",
                     "Microsoft.WindowsFeedbackHub",
                     "Microsoft.WindowsMaps",
-                    "Microsoft.WindowsSoundRecorder",
                     "Microsoft.Xbox.TCUI",
                     "Microsoft.XboxGameOverlay",
                     "Microsoft.XboxGamingOverlay",
@@ -168,11 +166,12 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #================================================
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Set-LenovoAssetTag.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovoassettag.ps1' -Encoding ascii -Force
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Lab_Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\Lab_Rename-Computer.ps1' -Encoding ascii -Force
-Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Autopilot.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\Autopilot.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Autopilot.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\autopilot.ps1' -Encoding ascii -Force
 #nvoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Set-LenovoBios.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovobios.ps1' -Encoding ascii -Force
 $OOBECMD = @'
 @echo off
 
+# Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
@@ -200,7 +199,7 @@ $UnattendXml = @'
                 <RunSynchronousCommand wcm:action="add">
                     <Order>1</Order>
                     <Description>Start Autopilot Import & Assignment Process</Description>
-                    <Path>PowerShell -ExecutionPolicy Bypass C:\Windows\Setup\scripts\Autopilot.ps1</Path>
+                    <Path>PowerShell -ExecutionPolicy Bypass C:\Windows\Setup\scripts\autopilot.ps1</Path>
                 </RunSynchronousCommand>
             </RunSynchronous>
         </component>
