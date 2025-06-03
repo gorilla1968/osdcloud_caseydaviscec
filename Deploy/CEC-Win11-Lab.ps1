@@ -7,13 +7,14 @@ if ((Get-MyComputerModel) -match 'Virtual') {
 }
 
 # Prompt the user to enter the Asset Tag number
-    do {
-    $assetTag = Read-Host "Please enter the asset tag number (3 to 5 digit number)"
+do {
+    Write-Host -ForegroundColor Cyan "Please enter the asset tag number (3 to 5 digit number):"
+    $assetTag = Read-Host
     if ($assetTag -match '^\d{3,5}$') {
         $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
     }
 } while ($assetTag -notmatch '^\d{3,5}$')
-    Write-Output "You entered a valid asset tag number: $assetTag"
+Write-Output "You entered a valid asset tag number: $assetTag"
 
 # Define valid campus options
 $validCampuses = @("A", "CR", "CSHS", "CSMS", "CS100", "FCHS", "FCMS", "DCN", "W", "O")
@@ -66,13 +67,13 @@ Import-Module OSD -Force
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
 $Params = @{
-    OSVersion = "Windows 11"
-    OSBuild = "24H2"
-    OSEdition = "Education"
+    OSVersion  = "Windows 11"
+    OSBuild    = "24H2"
+    OSEdition  = "Education"
     OSLanguage = "en-us"
-    OSLicense = "Volume"
-    ZTI = $true
-    Firmware = $true
+    OSLicense  = "Volume"
+    ZTI        = $true
+    Firmware   = $true
 }
 Start-OSDCloud @Params
 
@@ -131,12 +132,13 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #  [PostOS] AutopilotOOBE Configuration Staging
 #================================================
 
-$AssignedComputerName = Get-Content -Path "X:\OSDCloud\Config\Scripts\ComputerName.txt"
+# AssignedComputerName needs to be blank for Self-Deploying Autopilot
+#$AssignedComputerName = Get-Content -Path "X:\OSDCloud\Config\Scripts\ComputerName.txt"
 
 Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json"
 $AutopilotOOBEJson = @"
 {
-    "AssignedComputerName" : "$AssignedComputerName",
+    "AssignedComputerName" : "",
     "AddToGroup":  "Computer Config - BASE Win11 Labs",
     "Assign":  {
                    "IsPresent":  true
