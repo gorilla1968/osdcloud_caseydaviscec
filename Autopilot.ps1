@@ -365,7 +365,7 @@ Function CustomWindowsAutopilotInfo {
 				$deviceCount = $imported.Length
 				Write-Host "Waiting for $processingCount of $deviceCount to be imported"
 				if ($processingCount -gt 0) {
-					Start-Sleep 30
+					Start-Sleep 90
 				}
 			}
 			$importDuration = (Get-Date) - $importStart
@@ -397,7 +397,7 @@ Function CustomWindowsAutopilotInfo {
 				$deviceCount = $autopilotDevices.Length
 				Write-Host "Waiting for $processingCount of $deviceCount to be synced"
 				if ($processingCount -gt 0) {
-					Start-Sleep 30
+					Start-Sleep 90
 				}
 			}
 			$syncDuration = (Get-Date) - $syncStart
@@ -451,15 +451,15 @@ Function CustomWindowsAutopilotInfo {
 					$deviceCount = $autopilotDevices.Length
 					Write-Host "Waiting for $processingCount of $deviceCount to be assigned"
 					if ($processingCount -gt 0) {
-						Start-Sleep 30
+						Start-Sleep 90
 					}	
 				}
 				$assignDuration = (Get-Date) - $assignStart
 				$assignSeconds = [Math]::Ceiling($assignDuration.TotalSeconds)
 				Write-Host "Profiles assigned to all devices.  Elapsed time to complete assignment: $assignSeconds seconds"	
-				if ($Reboot) {
-					Restart-Computer -Force
-				}
+#				if ($Reboot) {
+#					Restart-Computer -Force
+#				}
 			}
 		}
 	}
@@ -503,8 +503,9 @@ CustomWindowsAutopilotInfo @Params
 Write-SectionHeader "Disconnect Graph API"
 Disconnect-MgGraph | Out-Null
 
-Write-DarkGrayHost "Remove Senstive Data"
+
 if (Test-Path -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh) {
+	Write-DarkGrayHost "Removing Sensitive Data"
 	Remove-Item -Path $env:SystemDrive\OSDCloud\Scripts\osdcloud.shh -Force
 }
 
