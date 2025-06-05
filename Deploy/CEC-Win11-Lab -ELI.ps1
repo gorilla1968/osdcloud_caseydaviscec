@@ -75,7 +75,9 @@ $Params = @{
     ZTI        = $true
     Firmware   = $false
 }
-Start-OSDCloud @Params
+#Start-OSDCloud @Params
+
+Start-OSDCloudGUI
 
 #================================================
 #  [PostOS] OOBEDeploy Configuration
@@ -84,7 +86,7 @@ Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.OOBED
 $OOBEDeployJson = @'
 {
     "AddNetFX3":  {
-                      "IsPresent":  false
+                      "IsPresent":  true
                   },
     "Autopilot":  {
                       "IsPresent":  false
@@ -116,10 +118,10 @@ $OOBEDeployJson = @'
                     "Microsoft.ZuneVideo"
                    ],
     "UpdateDrivers":  {
-                          "IsPresent":  false
+                          "IsPresent":  true
                       },
     "UpdateWindows":  {
-                          "IsPresent":  false
+                          "IsPresent":  true
                       }
 }
 '@
