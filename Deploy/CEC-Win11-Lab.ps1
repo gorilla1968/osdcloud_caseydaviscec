@@ -40,8 +40,10 @@ do {
     } until ($roomValid)
     # Get the serial number of the machine
     $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
-    # Check if serial contains "To be filled by" and replace it with the asset tag
-    if ($serial -match "To be filled by") {
+    $serial = $serial.Trim()
+    # Check if serial is empty, null, or contains invalid values and replace it with the asset tag
+    if ([string]::IsNullOrWhiteSpace($serial) -or
+        $serial -match "(fillded|system|defaultstring|none|to be filled|unknown|not specified|na|n/a|o.e.m.)") {
         $serial = $assetTag
     }
     # Construct the computer name
