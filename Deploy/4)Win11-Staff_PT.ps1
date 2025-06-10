@@ -14,6 +14,8 @@ do {
         $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
     }
 } while ($assetTag -notmatch '^\d{3,5}$')
+Write-Output "You entered a valid asset tag number: $assetTag"
+
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 Install-Module OSD -Force
 
