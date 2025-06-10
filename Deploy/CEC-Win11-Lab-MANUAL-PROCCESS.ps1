@@ -66,16 +66,26 @@ Import-Module OSD -Force
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
-$Params = @{
-    OSVersion  = "Windows 11"
-    OSBuild    = "24H2"
-    OSEdition  = "Education"
-    OSLanguage = "en-us"
-    OSLicense  = "Volume"
-    ZTI        = $true
-    Firmware   = $false
-}
+#$Params = @{
+#    OSVersion  = "Windows 11"
+#    OSBuild    = "24H2"
+#    OSEdition  = "Education"
+#    OSLanguage = "en-us"
+#    OSLicense  = "Volume"
+#    ZTI        = $true
+#    Firmware   = $false
+#}
 #Start-OSDCloud @Params
+
+#================================================
+Write-Host -ForegroundColor Cyan "IMPORTANT- In the next window that opens, select the following options:"
+Write-Host -ForegroundColor Green "================================================"
+Write-Host -ForegroundColor Yellow "Deployment Options: Uncheck 'Restart Computer after WinPE'"
+Write-Host -ForegroundColor Yellow "OS Edition: Education"
+Write-Host -ForegroundColor Yellow "Driver Pack: Microsoft Update Catalog"
+Write-Host -ForegroundColor Green "================================================"
+Write-Host -ForegroundColor Cyan "Please read the above instructions carefully before proceeding."
+Read-Host -Prompt "Press Enter to continue"
 
 Start-OSDCloudGUI
 
