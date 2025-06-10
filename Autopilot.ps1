@@ -478,6 +478,8 @@ Write-SectionHeader "Grabbing Autopilot parameters"
 $ProgramDataOSDeploy = "$env:ProgramData\OSDeploy"
 $JsonPath = "$ProgramDataOSDeploy\OSDeploy.AutopilotOOBE.json"
 
+$currentcomputername = (Get-CimInstance -Class Win32_ComputerSystem).Name
+
 $ImportAutopilotOOBE = @()
 $ImportAutopilotOOBE = Get-Content -Raw -Path $JsonPath | ConvertFrom-Json
 
@@ -493,7 +495,8 @@ $Params = @{
 
 # Comment out after testing
 # Write-Host ($Params | Out-String)
-Write-Host -ForegroundColor Yellow "ComputerName: $($ImportAutopilotOOBE.AssignedComputerName)"
+Write-Host -ForegroundColor Yellow "Current Computer Name: $currentcomputername"
+Write-Host -ForegroundColor Yellow "Assigned Computer Name: $($ImportAutopilotOOBE.AssignedComputerName)"
 Write-Host -ForegroundColor Yellow "AddToGroup: $($ImportAutopilotOOBE.AddToGroup)"
 
 Write-SectionHeader "Executing CustomWindowsAutopilotInfo"

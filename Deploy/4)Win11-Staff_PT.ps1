@@ -1,3 +1,4 @@
+#Script to deploy Windows 11 Part Time, Contractors, etc Staff (A1) shared devices.
 #================================================
 #   [PreOS] Update Module
 #================================================
@@ -5,33 +6,31 @@ if ((Get-MyComputerModel) -match 'Virtual') {
     Write-Host  -ForegroundColor Green "Setting Display Resolution to 1600x"
     Set-DisRes 1600
 }
-
+# Prompt the user to enter the Asset Tag number
+do {
+    Write-Host -ForegroundColor Cyan "Please enter the asset tag number (3 to 5 digit number):"
+    $assetTag = Read-Host
+    if ($assetTag -match '^\d{3,5}$') {
+        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
+    }
+} while ($assetTag -notmatch '^\d{3,5}$')
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 Install-Module OSD -Force
 
 Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
-# Prompt the user to enter the Asset Tag number
-    do {
-    $assetTag = Read-Host "Please enter the asset tag number (4 to 5 digit number)"
-    if ($assetTag -match '^\d{4,5}$') {
-        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
-    }
-} while ($assetTag -notmatch '^\d{4,5}$')
-    Write-Output "You entered a valid asset tag number: $assetTag"
-
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
 $Params = @{
-    OSVersion = "Windows 11"
-    OSBuild = "24H2"
-    OSEdition = "Pro"
+    OSVersion  = "Windows 11"
+    OSBuild    = "24H2"
+    OSEdition  = "Pro"
     OSLanguage = "en-us"
-    OSLicense = "Volume"
-    ZTI = $true
-    Firmware = $true
+    OSLicense  = "Volume"
+    ZTI        = $true
+    Firmware   = $true
 }
 Start-OSDCloud @Params
 
@@ -89,14 +88,15 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #================================================
 #  [PostOS] AutopilotOOBE Configuration Staging
 #================================================
-$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
-$AssignedComputerName = "CEC-$Serial"
+# AssignedComputerName needs to be blank for Self-Deploying Autopilot
+#$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
+#$AssignedComputerName = "CEC-$Serial"
 
 Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json"
 $AutopilotOOBEJson = @"
 {
-    "AssignedComputerName" : "$AssignedComputerName",
-    "AddToGroup":  "Autopilot - Device - Staff Win11",
+    "AssignedComputerName" : "",
+    "AddToGroup":  "Autopilot - Device - Staff Shared Win11",
     "Assign":  {
                    "IsPresent":  true
                },
@@ -132,8 +132,7 @@ $OOBECMD = @'
 
 # Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
-# Commented out because App Secret based Autopilot Enrollment Configured
-# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilot.ps1
+
 
 # Below a PS session for debug and testing in system context, # when not needed 
 # start /wait powershell.exe -NoL -ExecutionPolicy Bypass
