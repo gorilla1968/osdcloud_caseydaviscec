@@ -1,3 +1,4 @@
+#Script to deploy Windows 11 Lab environment using OSDCloud GUI to bypass driver package selection.
 #================================================
 #   [PreOS] Update Module
 #================================================
@@ -40,8 +41,10 @@ do {
     } until ($roomValid)
     # Get the serial number of the machine
     $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
-    # Check if serial contains "To be filled by" and replace it with the asset tag
-    if ($serial -match "To be filled by") {
+    $serial = $serial.Trim()
+    # Check if serial is empty, null, or contains invalid values and replace it with the asset tag
+    if ([string]::IsNullOrWhiteSpace($serial) -or
+        $serial -match "(fillded|system|defaultstring|none|to be filled|unknown|not specified|na|n/a|o.e.m.)") {
         $serial = $assetTag
     }
     # Construct the computer name
@@ -64,18 +67,8 @@ Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
 #=======================================================================
-#   [OS] Params and Start-OSDCloud
+#  Start-OSDCloud GUI
 #=======================================================================
-#$Params = @{
-#    OSVersion  = "Windows 11"
-#    OSBuild    = "24H2"
-#    OSEdition  = "Education"
-#    OSLanguage = "en-us"
-#    OSLicense  = "Volume"
-#    ZTI        = $true
-#    Firmware   = $false
-#}
-#Start-OSDCloud @Params
 
 #================================================
 Write-Host -ForegroundColor Cyan "IMPORTANT- In the next window that opens, select the following options:"

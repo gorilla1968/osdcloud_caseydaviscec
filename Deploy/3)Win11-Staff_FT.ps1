@@ -1,3 +1,4 @@
+#Script to deploy Windows 11 Full Time A3 Staff Devices
 #================================================
 #   [PreOS] Update Module
 #================================================
@@ -6,76 +7,32 @@ if ((Get-MyComputerModel) -match 'Virtual') {
     Set-DisRes 1600
 }
 
-# Prompt the user to enter the Asset Tag number
-do {
-    Write-Host -ForegroundColor Cyan "Please enter the asset tag number (3 to 5 digit number):"
-    $assetTag = Read-Host
-    if ($assetTag -match '^\d{3,5}$') {
-        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
-    }
-} while ($assetTag -notmatch '^\d{3,5}$')
-Write-Output "You entered a valid asset tag number: $assetTag"
-
-# Define valid campus options
-$validCampuses = @("A", "CR", "CSHS", "CSMS", "CS100", "FCHS", "FCMS", "DCN", "W", "O")
-do {
-    # Prompt for campus
-    do {
-        Write-Host "Enter campus code (Options: A, CR, CSHS, CSMS, CS100, FCHS, FCMS, DCN, W, O)" -ForegroundColor Cyan
-        $campus = Read-Host
-        $campus = $campus.ToUpper()
-        $campusValid = $validCampuses -contains $campus
-        if (-not $campusValid) {
-            Write-Host "Invalid campus code. Please try again." -ForegroundColor Red
-        }
-    } until ($campusValid)
-    # Prompt for room number
-    do {
-        Write-Host "Enter room number (100-500)" -ForegroundColor Cyan
-        $roomNumber = Read-Host
-        $roomValid = ($roomNumber -as [int]) -and ($roomNumber -ge 100) -and ($roomNumber -le 500)
-        if (-not $roomValid) {
-            Write-Host "Invalid room number. Please enter a number between 100 and 500." -ForegroundColor Red
-        }
-    } until ($roomValid)
-    # Get the serial number of the machine
-    $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
-    $serial = $serial.Trim()
-    # Check if serial is empty, null, or contains invalid values and replace it with the asset tag
-    if ([string]::IsNullOrWhiteSpace($serial) -or
-        $serial -match "(fillded|system|defaultstring|none|to be filled|unknown|not specified|na|n/a|o.e.m.)") {
-        $serial = $assetTag
-    }
-    # Construct the computer name
-    $computerName = "CEC$campus-Lab$roomNumber-$serial"
-    # Output the result
-    Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
-    # Ask for confirmation
-    do {
-        $confirmation = Read-Host "Is this correct? (y/n)"
-    } until ($confirmation -match '^[yYnN]$')
-} until ($confirmation -match '^[yY]$')
-# Save the computer name to a file
-$computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt" -Encoding ascii -Force
-
-#================================================
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 Install-Module OSD -Force
 
 Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
+# Prompt the user to enter the Asset Tag number
+    do {
+    $assetTag = Read-Host "Please enter the asset tag number (4 to 5 digit number)"
+    if ($assetTag -match '^\d{4,5}$') {
+        $assetTag | Out-File -FilePath "X:\OSDCloud\Config\Scripts\AssetTag.txt" -Encoding ascii -Force
+    }
+} while ($assetTag -notmatch '^\d{4,5}$')
+    Write-Output "You entered a valid asset tag number: $assetTag"
+
 #=======================================================================
 #   [OS] Params and Start-OSDCloud
 #=======================================================================
 $Params = @{
-    OSVersion  = "Windows 11"
-    OSBuild    = "24H2"
-    OSEdition  = "Education"
+    OSVersion = "Windows 11"
+    OSBuild = "24H2"
+    OSEdition = "Pro"
     OSLanguage = "en-us"
-    OSLicense  = "Volume"
-    ZTI        = $true
-    Firmware   = $true
+    OSLicense = "Volume"
+    ZTI = $true
+    Firmware = $true
 }
 Start-OSDCloud @Params
 
@@ -133,19 +90,18 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #================================================
 #  [PostOS] AutopilotOOBE Configuration Staging
 #================================================
-
-# AssignedComputerName needs to be blank for Self-Deploying Autopilot
-#$AssignedComputerName = Get-Content -Path "X:\OSDCloud\Config\Scripts\ComputerName.txt"
+$Serial = Get-WmiObject Win32_bios | Select-Object -ExpandProperty SerialNumber
+$AssignedComputerName = "CEC-$Serial"
 
 Write-Host -ForegroundColor Green "Create C:\ProgramData\OSDeploy\OSDeploy.AutopilotOOBE.json"
 $AutopilotOOBEJson = @"
 {
-    "AssignedComputerName" : "",
-    "AddToGroup":  "Computer Config - BASE Win11 Labs",
+    "AssignedComputerName" : "$AssignedComputerName",
+    "AddToGroup":  "Autopilot - Device - Staff Win11",
     "Assign":  {
                    "IsPresent":  true
                },
-    "GroupTag":  "Lab",
+    "GroupTag":  "Staff",
     "Hidden":  [
                    "AddToGroup",
                    "AssignedUser",
@@ -169,14 +125,16 @@ $AutopilotOOBEJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.Autopi
 #  [PostOS] OOBE CMD Command Line
 #================================================
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/main/Set-LenovoAssetTag.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovoassettag.ps1' -Encoding ascii -Force
-Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Lab_Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\Lab_Rename-Computer.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Rename-Computer.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\rename-computer.ps1' -Encoding ascii -Force
 Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Autopilot.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\autopilot.ps1' -Encoding ascii -Force
-#nvoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Set-LenovoBios.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovobios.ps1' -Encoding ascii -Force
+Invoke-RestMethod https://raw.githubusercontent.com/caseydaviscec/osdcloud/refs/heads/main/Set-LenovoBios.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\set-lenovobios.ps1' -Encoding ascii -Force
 $OOBECMD = @'
 @echo off
 
 # Prompt for setting Lenovo Asset Tag
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\set-lenovoassettag.ps1
+# Commented out because App Secret based Autopilot Enrollment Configured
+# start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\autopilot.ps1
 
 # Below a PS session for debug and testing in system context, # when not needed 
 # start /wait powershell.exe -NoL -ExecutionPolicy Bypass
@@ -190,7 +148,7 @@ $OOBECMD | Out-File -FilePath 'C:\Windows\Setup\scripts\oobe.cmd' -Encoding asci
 #================================================
 Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
 $SetupCompleteCMD = @'
-powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\Lab_Rename-Computer.ps1
+powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\rename-computer.ps1
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
