@@ -63,6 +63,8 @@ If ($BiosPassState.PasswordState -eq 0) {
         }
         Else {
             Write-Host -ForegroundColor Red "Failed to set BIOS Password. Error code: $($BiosPWStatus.Return)"
+            Write-Host -ForegroundColor Red "Please ensure you used System Deployment Boot Mode"
+            Exit
         }
     }
     
