@@ -17,57 +17,60 @@ do {
 } while ($assetTag -notmatch '^\d{3,5}$')
 Write-Output "You entered a valid asset tag number: $assetTag"
 
-    # Get the serial number of the machine
-    $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
-    $serial = $serial.Trim()
-    # Check if serial is empty, null, or contains invalid values and replace it with the asset tag
-    if ([string]::IsNullOrWhiteSpace($serial) -or
-        $serial -match "(fillded|system|defaultstring|none|to be filled|unknown|not specified|na|n/a|o.e.m.)") {
-        $serial = $assetTag
-    }
-    # Construct the computer name
-    $computerName = "CECO-Student-$serial"
-    # Output the result
-    Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
+# Get the serial number of the machine
+$serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
+$serial = $serial.Trim()
+# Check if serial is empty, null, or contains invalid values and replace it with the asset tag
+if ([string]::IsNullOrWhiteSpace($serial) -or
+    $serial -match "(fillded|system|defaultstring|none|to be filled|unknown|not specified|na|n/a|o.e.m.)") {
+    $serial = $assetTag
+}
+# Construct the computer name
+$computerName = "CECO-Student-$serial"
+# Output the result
+Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
 # Save the computer name to a file
 $computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt" -Encoding ascii -Force
 
 
 #================================================
-#   [PreOS] Find Bios_Pass.txt and set $Passkey
+# [PreODS] Set Bios Password
 #================================================
-$Passkey = $null
-foreach ($drive in Get-PSDrive -PSProvider FileSystem) {
-    $biosPassPath = Join-Path $drive.Root "Bios_Pass.txt"
-    if (Test-Path $biosPassPath) {
-        $Passkey = Get-Content $biosPassPath -Raw
-        $Passkey = $Passkey.Trim()
-        break
-    }
-}
-if (-not $Passkey) {
-    Write-Host -ForegroundColor Red "Bios_Pass.txt not found on any drive or file is empty."
-} else {
-    Write-Host -ForegroundColor Green "Bios_Pass.txt found."
-}
-
-#================================================
-# Set Bios Password
+# Check if Lenovo Bios Password has been set
 $BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPasswordSettings
-If($BiosPassState.PasswordState -eq 0) {
+#If ($BiosPassState.PasswordState -eq 0) {
+    #  Find Bios_Pass.txt and set $Passkey
+    $Passkey = $null
+    Foreach ($drive in Get-PSDrive -PSProvider FileSystem) {
+        $biosPassPath = Join-Path $drive.Root "Bios_Pass.txt"
+        If (Test-Path $biosPassPath) {
+            $Passkey = Get-Content $biosPassPath -Raw
+            $Passkey = $Passkey.Trim()
+            break
+        }
+    }
+    If (-not $Passkey) {
+        Write-Host -ForegroundColor Red "Bios_Pass.txt not found on any drive or file is empty."
+    }
+    Else {
+        Write-Host -ForegroundColor Green "Bios_Pass.txt found."
+    }
     Write-Host -ForegroundColor Green "Setting BIOS Password"
     
     $setPw = Get-WmiObject -Namespace root/wmi -Class Lenovo_setBiosPassword
-    $BiosPWStatus = $setPw.SetBiosPassword("pap,$($Passkey),$($Passkey),ascii,us")
+    $BiosPWStatus = $setPw.SetBiosPassword("pap,($Passkey),($Passkey),ascii,us")
     If ($BiosPWStatus.Return -eq "Success") {
         Write-Host -ForegroundColor white -BackgroundColor Green "BIOS Password set successfully." 
-    } Else {
+    }
+    Else {
         Write-Host -ForegroundColor Red "Failed to set BIOS Password. Error code: $($BiosPWStatus.Return)"
     }
-} Else {
-    Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
-}
-Write-Host -ForegroundColor Magenta "You can remove the flash drive. Hit enter to continue..."
+#}
+#Else {
+#    Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
+#}
+Write-Host -ForegroundColor Magenta "You can remove the flash drive."
+Write-Host -ForegroundColor Magenta "Hit enter to continue after drive has been removed..."
 Pause
 
 #================================================
