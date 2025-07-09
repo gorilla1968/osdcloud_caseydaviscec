@@ -17,7 +17,6 @@ do {
 } while ($assetTag -notmatch '^\d{3,5}$')
 Write-Output "You entered a valid asset tag number: $assetTag"
 
-do {
     # Get the serial number of the machine
     $serial = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
     $serial = $serial.Trim()
@@ -30,13 +29,45 @@ do {
     $computerName = "CECO-Student-$serial"
     # Output the result
     Write-Host "Generated Computer Name: $computerName" -ForegroundColor Yellow
-    # Ask for confirmation
-    do {
-        $confirmation = Read-Host "Is this correct? (y/n)"
-    } until ($confirmation -match '^[yYnN]$')
-} until ($confirmation -match '^[yY]$')
 # Save the computer name to a file
 $computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt" -Encoding ascii -Force
+
+
+#================================================
+#   [PreOS] Find Bios_Pass.txt and set $Passkey
+#================================================
+$Passkey = $null
+foreach ($drive in Get-PSDrive -PSProvider FileSystem) {
+    $biosPassPath = Join-Path $drive.Root "Bios_Pass.txt"
+    if (Test-Path $biosPassPath) {
+        $Passkey = Get-Content $biosPassPath -Raw
+        $Passkey = $Passkey.Trim()
+        break
+    }
+}
+if (-not $Passkey) {
+    Write-Host -ForegroundColor Red "Bios_Pass.txt not found on any drive or file is empty."
+} else {
+    Write-Host -ForegroundColor Green "Bios_Pass.txt found."
+}
+
+#================================================
+# Set Bios Password
+$BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPasswordSettings
+If($BiosPassState.PasswordState -eq 0) {
+    Write-Host -ForegroundColor Green "Setting BIOS Password"
+    
+    $setPw = Get-WmiObject -Namespace root/wmi -Class Lenovo_setBiosPassword
+    $BiosPWStatus = $setPw.SetBiosPassword("pap,$($Passkey),$($Passkey),ascii,us")
+    If ($BiosPWStatus.Return -eq "Success") {
+        Write-Host -ForegroundColor white -BackgroundColor Green "BIOS Password set successfully." 
+    } Else {
+        Write-Host -ForegroundColor Red "Failed to set BIOS Password. Error code: $($BiosPWStatus.Return)"
+    }
+} Else {
+    Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
+}
+Write-Host -ForegroundColor Magenda "You can remove the flash drive. Hit enter to continue..."
 
 #================================================
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
