@@ -46,6 +46,7 @@ If ($BiosPassState.PasswordState -eq 0) {
         If (Test-Path $biosPassPath) {
             $Passkey = Get-Content $biosPassPath -Raw
             $Passkey = $Passkey.Trim()
+            write-host $Passkey
             break
         }
     }
@@ -58,7 +59,8 @@ If ($BiosPassState.PasswordState -eq 0) {
     Write-Host -ForegroundColor Green "Setting BIOS Password"
     
     $setPw = Get-WmiObject -Namespace root/wmi -Class Lenovo_setBiosPassword
-    $BiosPWStatus = $setPw.SetBiosPassword("pap,($Passkey),($Passkey),ascii,us")
+    $SetVariables = ("pap,($Passkey),($Passkey),ascii,us")
+    $BiosPWStatus = $setPw.SetBiosPassword($SetVariables)
     If ($BiosPWStatus.Return -eq "Success") {
         Write-Host -ForegroundColor white -BackgroundColor Green "BIOS Password set successfully." 
     }
