@@ -51,6 +51,9 @@ If ($BiosPassState.PasswordState -eq 0) {
     }
     If (-not $Passkey) {
         Write-Host -ForegroundColor Red "Bios_Pass.txt not found on any drive or file is empty."
+        Write-Host -ForegroundColor White "Hit enter to exit..."
+            Pause
+            Exit
     }
     Else {
         Write-Host -ForegroundColor Green "Bios_Pass.txt found."
