@@ -67,7 +67,8 @@ If($BiosPassState.PasswordState -eq 0) {
 } Else {
     Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
 }
-Write-Host -ForegroundColor Magenda "You can remove the flash drive. Hit enter to continue..."
+Write-Host -ForegroundColor Magenta "You can remove the flash drive. Hit enter to continue..."
+Pause
 
 #================================================
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
