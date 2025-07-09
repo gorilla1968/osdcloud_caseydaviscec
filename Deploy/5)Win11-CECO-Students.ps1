@@ -46,7 +46,6 @@ If ($BiosPassState.PasswordState -eq 0) {
         If (Test-Path $biosPassPath) {
             $Passkey = Get-Content $biosPassPath -Raw
             $Passkey = $Passkey.Trim()
-            write-host $Passkey
             break
         }
     }
@@ -72,7 +71,7 @@ Else {
     Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
 }
 Write-Host -ForegroundColor Magenta "You can remove the flash drive."
-Write-Host -ForegroundColor Magenta "Hit enter to continue after drive has been removed..."
+Write-Host -ForegroundColor white -BackgroundColor Magenta "Hit enter to continue after drive has been removed..."
 Pause
 
 #================================================
