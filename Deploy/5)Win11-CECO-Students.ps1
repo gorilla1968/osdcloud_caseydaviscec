@@ -38,7 +38,7 @@ $computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt"
 #================================================
 # Check if Lenovo Bios Password has been set
 $BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPasswordSettings
-#If ($BiosPassState.PasswordState -eq 0) {
+If ($BiosPassState.PasswordState -eq 0) {
     #  Find Bios_Pass.txt and set $Passkey
     $Passkey = $null
     Foreach ($drive in Get-PSDrive -PSProvider FileSystem) {
@@ -65,10 +65,10 @@ $BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPassw
     Else {
         Write-Host -ForegroundColor Red "Failed to set BIOS Password. Error code: $($BiosPWStatus.Return)"
     }
-#}
-#Else {
-#    Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
-#}
+}
+Else {
+    Write-Host -ForegroundColor Yellow "BIOS Password already set, skipping..."
+}
 Write-Host -ForegroundColor Magenta "You can remove the flash drive."
 Write-Host -ForegroundColor Magenta "Hit enter to continue after drive has been removed..."
 Pause
