@@ -37,7 +37,7 @@ $computerName | Out-File -FilePath "X:\OSDCloud\Config\Scripts\ComputerName.txt"
 # [PreODS] Set Bios Password
 #================================================
 # Check if Lenovo Bios Password has been set
-$BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPasswordSettings
+<#$BiosPassState = Get-CimInstance -Namespace root/WMI -ClassName Lenovo_BiosPasswordSettings
 If ($BiosPassState.PasswordState -eq 0) {
     #  Find Bios_Pass.txt and set $Passkey
     $Passkey = $null
@@ -74,7 +74,7 @@ Else {
 Write-Host -ForegroundColor Magenta "You can remove the flash drive."
 Write-Host -ForegroundColor Magenta "Hit enter to continue after drive has been removed..."
 Pause
-
+#>
 #================================================
 Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
 Install-Module OSD -Force
