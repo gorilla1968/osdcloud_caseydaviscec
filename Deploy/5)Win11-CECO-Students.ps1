@@ -51,8 +51,7 @@ If ($BiosPassState.PasswordState -eq 0) {
     }
     If (-not $Passkey) {
         Write-Host -ForegroundColor Red "Bios_Pass.txt not found on any drive or file is empty."
-        Write-Host -ForegroundColor White "Hit enter to exit..."
-            Pause
+        Write-Host -ForegroundColor White "Exiting Script..."
             Exit
     }
     Else {
@@ -67,8 +66,7 @@ If ($BiosPassState.PasswordState -eq 0) {
         Else {
             Write-Host -ForegroundColor Red "Failed to set BIOS Password. Error code: $($BiosPWStatus.Return)"
             Write-Host -ForegroundColor Red "Please ensure you used System Deployment Boot Mode"
-            Write-Host -ForegroundColor White "Hit enter to exit..."
-            Pause
+            Write-Host -ForegroundColor White "Exiting Script..."
             Exit
         }
     }
