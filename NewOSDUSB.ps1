@@ -24,7 +24,7 @@ function Download-And-VerifyISO {
     catch {
         Write-Host "Error downloading ISO." -ForegroundColor Red
         Write-Host $_.Exception.Message -ForegroundColor Red
-        Write-Host "Are you connected to the internet at a CEC school or VPN?"
+        Write-Host "Are you hardwired at a CEC campus or on the VPN?"
         Write-Host "Please check your connection and try again."
         exit 1
     }
