@@ -483,12 +483,12 @@ $currentcomputername = (Get-CimInstance -Class Win32_ComputerSystem).Name
 
 $ImportAutopilotOOBE = @()
 $ImportAutopilotOOBE = Get-Content -Raw -Path $JsonPath | ConvertFrom-Json
-
+#AddToGroup           = $ImportAutopilotOOBE.AddToGroup
 $Params = @()
 $Params = @{
 	Assign               = $true
 	Online               = $true
-	AddToGroup           = $ImportAutopilotOOBE.AddToGroup
+	GroupTag             = $ImportAutopilotOOBE.GroupTag
 	AssignedComputerName = $ImportAutopilotOOBE.AssignedComputerName
 	TenantID             = "f09d3b97-ca3d-4409-9661-a7cafe9a8d3e"
 	AppID                = "6210704b-a74c-4ab7-b33e-09cca2d9004a"
