@@ -468,7 +468,7 @@ Function CustomWindowsAutopilotInfo {
 Write-SectionHeader "Get App Secret"
 $ApplicationId = "6210704b-a74c-4ab7-b33e-09cca2d9004a"
 #$SecuredPassword = Get-Content -Path P:\OSDCloud\Scripts\osdcloud.txt
-$SecuredPassword = XWb8Q~-NnRqITcv4OXJWNBwIMtcgRLMzfxUtOc3H
+$SecuredPassword = "XWb8Q~-NnRqITcv4OXJWNBwIMtcgRLMzfxUtOc3H"
 $tenantID = "f09d3b97-ca3d-4409-9661-a7cafe9a8d3e"
 
 $SecuredPasswordPassword = ConvertTo-SecureString -String $SecuredPassword -AsPlainText -Force
@@ -490,8 +490,8 @@ $Params = @{
 	Online               = $true
 	AddToGroup           = $ImportAutopilotOOBE.AddToGroup
 	AssignedComputerName = $ImportAutopilotOOBE.AssignedComputerName
-	TenantID             = "756e5b19-b4c4-4dc1-ae63-693179768af4"
-	AppID                = "d0f55dbf-e2ec-4020-bc22-f299c06a737a"
+	TenantID             = "f09d3b97-ca3d-4409-9661-a7cafe9a8d3e"
+	AppID                = "6210704b-a74c-4ab7-b33e-09cca2d9004a"
 }
 
 # Comment out after testing
